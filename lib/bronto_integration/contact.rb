@@ -10,10 +10,10 @@ module BrontoIntegration
     end
 
     def get_id_by_email(email)
-      if contact_id = bonto_client.read_contacts email
+      if contact_id = bronto_client.read_contacts(email)
         contact_id
       else
-        result = bronto_client.add_or_update_contacts { email: email }
+        result = bronto_client.add_or_update_contacts({ email: email })
         result[:id]
       end
     end
