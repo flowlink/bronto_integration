@@ -33,4 +33,9 @@ class BrontoEndpoint < EndpointBase::Sinatra::Base
     BrontoIntegration::Communication.new(@config, @payload).trigger_transactional_email
     result 200, "Email added to deliveries"
   end
+
+  post "/add_to_list" do
+    BrontoIntegration::Communication.new(@config, @payload).add_to_list
+    result 200, "#{@payload[:member][:email]} added to list #{@payload[:member][:list_name]}"
+  end
 end

@@ -1,13 +1,24 @@
 module BrontoIntegration
   class Communication
-    attr_reader :config, :bronto_client, :email_payload, :variables_payload
+    attr_reader :config, :bronto_client, :email_payload, :variables_payload,
+      :member_payload
 
     def initialize(config, payload, client = nil)
       @config = config
       @email_payload = payload[:email] || {}
       @variables_payload = email_payload[:variables] || {}
+      @member_payload = payload[:member] || {}
 
       @bronto_client = client || Bronto.new(config[:bronto_api_token])
+    end
+
+    def add_to_list
+      Contact.new({}, {}, bronto_client).find_or_create member_payload[:email]
+      bronto_client.add_to_list member_payload[:list_name], member_payload[:email]
+    end
+
+    def trigger_transactional_email
+      bronto_client.add_deliveries build
     end
 
     def message_id
@@ -23,10 +34,6 @@ module BrontoIntegration
     def contact_id
       contact = Contact.new({}, {}, bronto_client)
       contact.get_id_by_email email_payload[:to]
-    end
-
-    def trigger_transactional_email
-      bronto_client.add_deliveries build
     end
 
     def build

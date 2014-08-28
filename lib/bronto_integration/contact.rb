@@ -18,6 +18,8 @@ module BrontoIntegration
       end
     end
 
+    alias :find_or_create :get_id_by_email
+
     def set_up
       bronto_client.add_or_update_contacts build
     end

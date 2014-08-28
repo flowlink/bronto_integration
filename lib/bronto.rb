@@ -126,6 +126,29 @@ class Bronto
     end
   end
 
+  def add_to_list(list_name, contact_email)
+    response = client.call(
+      :add_to_list,
+      soap_header: soup_header,
+      message: {
+        list: {
+          name: list_name
+        },
+        contacts: {
+          email: contact_email
+        }
+      }
+    )
+
+    result = response.body[:add_to_list_response][:return][:results]
+
+    if result[:is_error]
+      raise ValidationError, "(Error Code: #{result[:error_code]}) #{result[:error_string]}"
+    else
+      result
+    end
+  end
+
   private
     def session_id
       return @session_id if @session_id
