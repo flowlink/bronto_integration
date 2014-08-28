@@ -1,9 +1,9 @@
 require 'savon'
 
 class Bronto
-  class ValidationError < StandardError; end
-
   attr_reader :client, :token
+
+  class ValidationError < StandardError; end
 
   # NOTE Try building a response object?
 
@@ -74,21 +74,56 @@ class Bronto
     end
   end
 
+  # NOTE Name this read_fields instead so all calls here have exactly the
+  # same name they have in Bronto api docs
   def get_field_id(name)
     response = client.call(
       :read_fields,
       soap_header: soup_header,
       message: {
         filter: {
-          :name => {
-            :operator => 'EqualTo',
-            :value => name }
-        },
+          name: {
+            operator: 'EqualTo',
+            value: name
+          }
+        }
       }
     )
 
     value = response.body[:read_fields_response][:return]
     value[:id] if value.is_a? Hash
+  end
+
+  # Ref: http://dev.bronto.com/api/v4/functions/read/readmessages
+  def read_messages(message_name)
+    response = client.call(
+      :read_messages,
+      soap_header: soup_header,
+      message: {
+        filter: {
+          name: [{ operator: 'EqualTo', :value => message_name }]
+        },
+        includeContent: false,
+        pageNumber: 1
+    })
+
+    response.body[:read_messages_response][:return]
+  end
+
+  def add_deliveries(data)
+    response = client.call(
+      :add_deliveries,
+      soap_header: soup_header,
+      message: { deliveries: data }
+    )
+
+    result = get_results response.body[:add_deliveries_response]
+
+    if result[:is_error]
+      raise ValidationError, "(Error Code: #{result[:error_code]}) #{result[:error_string]}"
+    else
+      result
+    end
   end
 
   private
