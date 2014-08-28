@@ -17,6 +17,10 @@ module BrontoIntegration
       bronto_client.add_to_list member_payload[:list_name], member_payload[:email]
     end
 
+    def remove_from_list
+      bronto_client.remove_from_list member_payload[:list_name], member_payload[:email]
+    end
+
     def trigger_transactional_email
       bronto_client.add_deliveries build
     end

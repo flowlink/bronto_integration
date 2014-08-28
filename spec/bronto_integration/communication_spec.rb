@@ -43,7 +43,7 @@ module BrontoIntegration
       end
     end
 
-    it "adds new contact and add that to given list" do
+    it "removes a contact from given list" do
       payload = {
         member: {
           email: "wombat@spreecommerce.com",
@@ -54,7 +54,7 @@ module BrontoIntegration
       subject = described_class.new config, payload
 
       VCR.use_cassette "communication/add_to_list_new_contact" do
-        subject.add_to_list
+        subject.remove_from_list
       end
     end
   end

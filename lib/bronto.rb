@@ -126,6 +126,7 @@ class Bronto
     end
   end
 
+  # Ref: http://dev.bronto.com/api/v4/functions/add/addtolist
   def add_to_list(list_name, contact_email)
     response = client.call(
       :add_to_list,
@@ -141,6 +142,28 @@ class Bronto
     )
 
     result = response.body[:add_to_list_response][:return][:results]
+
+    if result[:is_error]
+      raise ValidationError, "(Error Code: #{result[:error_code]}) #{result[:error_string]}"
+    else
+      result
+    end
+  end
+
+  # Ref: http://dev.bronto.com/api/v4/functions/miscellaneous/removefromlist
+  def remove_from_list(list_name, contact_email)
+    response = client.call(
+      :remove_from_list,
+      soap_header: soup_header,
+      message: {
+        list: { name: list_name },
+        contacts: {
+          email: contact_email
+        }
+      }
+    )
+
+    result = response.body[:remove_from_list_response][:return][:results]
 
     if result[:is_error]
       raise ValidationError, "(Error Code: #{result[:error_code]}) #{result[:error_string]}"
