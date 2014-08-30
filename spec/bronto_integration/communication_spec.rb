@@ -61,8 +61,7 @@ module BrontoIntegration
     it "removes a contact from all lists" do
       payload = {
         member: {
-          email: "washington@spreecommerce.com",
-          list_name: "wombat"
+          email: "washington@spreecommerce.com"
         }
       }
 
