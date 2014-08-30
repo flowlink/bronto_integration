@@ -41,7 +41,7 @@ module BrontoIntegration
     end
 
     def get_field_id(name)
-      result = bronto_client.read_fields(key.to_s)
+      result = bronto_client.read_fields name
       result[:id] if result.is_a? Hash
     end
   end

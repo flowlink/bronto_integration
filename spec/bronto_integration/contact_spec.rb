@@ -39,6 +39,20 @@ module BrontoIntegration
       end
     end
 
+    it "sets up contact with custom fields" do
+      customer = {
+        email: "inbloom@nirvana.com",
+        fields: {
+          lastname: "Nevermind"
+        }
+      }
+      subject = described_class.new config, customer: customer
+
+      VCR.use_cassette "contacts/set_up_fields" do
+        expect(subject.set_up[:id]).to be_present
+      end
+    end
+
     it "sets up customer update" do
       customer = {
         email: "washington@spreecommerce.com",
