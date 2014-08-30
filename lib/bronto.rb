@@ -172,6 +172,23 @@ class Bronto
     end
   end
 
+  # Ref: http://dev.bronto.com/api/v4/functions/read/readlists
+  def read_lists
+    response = client.call(
+      :read_lists,
+      soap_header: soup_header,
+      message: { :filter => {} }
+    )
+
+    lists = response.body[:read_lists_response][:return]
+
+    if lists.is_a? Hash
+      [lists]
+    else
+      lists
+    end
+  end
+
   private
     def session_id
       return @session_id if @session_id

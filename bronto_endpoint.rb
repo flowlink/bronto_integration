@@ -38,4 +38,14 @@ class BrontoEndpoint < EndpointBase::Sinatra::Base
     BrontoIntegration::Communication.new(@config, @payload).add_to_list
     result 200, "#{@payload[:member][:email]} added to list #{@payload[:member][:list_name]}"
   end
+
+  post "/remove_from_list" do
+    BrontoIntegration::Communication.new(@config, @payload).remove_from_list
+    result 200, "Contact #{@payload[:member][:email]} successfully removed from list #{@payload[:member][:list_name]}"
+  end
+
+  post "/remove_from_all_lists" do
+    BrontoIntegration::Communication.new(@config, @payload).remove_from_all_lists
+    result 200, "Contact #{@payload[:member][:email]} successfully removed from all lists"
+  end
 end

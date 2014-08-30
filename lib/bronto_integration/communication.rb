@@ -21,6 +21,11 @@ module BrontoIntegration
       bronto_client.remove_from_list member_payload[:list_name], member_payload[:email]
     end
 
+    def remove_from_all_lists
+      lists = bronto_client.read_lists
+      lists.map { |l| bronto_client.remove_from_list l[:name], member_payload[:email] }
+    end
+
     def trigger_transactional_email
       bronto_client.add_deliveries build
     end
