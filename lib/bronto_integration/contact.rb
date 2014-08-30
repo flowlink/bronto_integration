@@ -10,12 +10,11 @@ module BrontoIntegration
     end
 
     def get_id_by_email(email)
-      if contact_id = bronto_client.read_contacts(email)
-        contact_id
-      else
-        result = bronto_client.add_or_update_contacts({ email: email })
-        result[:id]
+      unless contact = bronto_client.read_contacts(email)
+        contact = bronto_client.add_or_update_contacts({ email: email })
       end
+      
+      contact[:id]
     end
 
     alias :find_or_create :get_id_by_email
@@ -35,10 +34,15 @@ module BrontoIntegration
     def fields
       fields = (customer[:fields] || []).map do |key, value|
         {
-          :fieldId => bronto_client.get_field_id(key.to_s),
+          :fieldId => get_field_id(key.to_s),
           :content => value.to_s
         }
       end
+    end
+
+    def get_field_id(name)
+      result = bronto_client.read_fields(key.to_s)
+      result[:id] if result.is_a? Hash
     end
   end
 end

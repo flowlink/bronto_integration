@@ -19,12 +19,21 @@ class Bronto
     )
   end
 
+  # Ref: http://dev.bronto.com/api/v4/functions/add/addorupdateorders
   def add_or_update_orders(data)
-    client.call(
+    response = client.call(
       :add_or_update_orders,
       soap_header: soup_header,
       message: { :orders => data }
     )
+
+    result = get_results response.body[:add_or_update_orders_response]
+
+    if result[:is_error]
+      raise ValidationError, "(Error Code: #{result[:error_code]}) #{result[:error_string]}"
+    else
+      result
+    end
   end
 
   # Ref: http://dev.bronto.com/api/v4/functions/add/addorupdatecontacts
@@ -69,29 +78,21 @@ class Bronto
       }
     )
 
-    if result = response.body[:read_contacts_response][:return]
-      result[:id]
-    end
+    response.body[:read_contacts_response][:return]
   end
 
-  # NOTE Name this read_fields instead so all calls here have exactly the
-  # same name they have in Bronto api docs
-  def get_field_id(name)
+  def read_fields(name)
     response = client.call(
       :read_fields,
       soap_header: soup_header,
       message: {
         filter: {
-          name: {
-            operator: 'EqualTo',
-            value: name
-          }
+          name: { operator: 'EqualTo', value: name }
         }
       }
     )
 
-    value = response.body[:read_fields_response][:return]
-    value[:id] if value.is_a? Hash
+    response.body[:read_fields_response][:return]
   end
 
   # Ref: http://dev.bronto.com/api/v4/functions/read/readmessages
