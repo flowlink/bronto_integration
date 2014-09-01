@@ -32,11 +32,6 @@ module BrontoIntegration
 
     def message_id
       @message ||= bronto_client.read_messages email_payload[:message]
-
-      unless @message[:id]
-        raise Bronto::ValidationError, "Couldn't find the message template for \"#{template}\""
-      end
-
       @message[:id]
     end
 

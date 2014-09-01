@@ -108,9 +108,16 @@ class Bronto
         pageNumber: 1
     })
 
-    response.body[:read_messages_response][:return]
+    result = response.body[:read_messages_response][:return]
+
+    if result.blank? || result[:id].blank?
+      raise Bronto::ValidationError, "Couldn't find the message template for \"#{message_name}\""
+    end
+
+    result
   end
 
+  # Ref: http://dev.bronto.com/api/v4/functions/add/adddeliveries
   def add_deliveries(data)
     response = client.call(
       :add_deliveries,
