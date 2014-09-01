@@ -25,7 +25,7 @@ module BrontoIntegration
       order_payload[:line_items].inject([]) do |items, item|
         items << {
           :id => item[:product_id],
-          :sku => item[:product_sku],
+          :sku => item[:sku],
           :name => item[:name],
           :quantity => item[:quantity],
           :price => item[:price]
