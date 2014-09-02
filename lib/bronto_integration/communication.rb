@@ -14,11 +14,24 @@ module BrontoIntegration
 
     def add_to_list
       Contact.new({}, {}, bronto_client).find_or_create member_payload[:email]
-      bronto_client.add_to_list member_payload[:list_name], member_payload[:email]
+
+      if member_payload[:list_name].is_a? Array
+        member_payload[:list_name].each do |list|
+          bronto_client.add_to_list list, member_payload[:email]
+        end
+      else
+        bronto_client.add_to_list member_payload[:list_name], member_payload[:email]
+      end
     end
 
     def remove_from_list
-      bronto_client.remove_from_list member_payload[:list_name], member_payload[:email]
+      if member_payload[:list_name].is_a? Array
+        member_payload[:list_name].each do |list|
+          bronto_client.remove_from_list list, member_payload[:email]
+        end
+      else
+        bronto_client.remove_from_list member_payload[:list_name], member_payload[:email]
+      end
     end
 
     def remove_from_all_lists

@@ -43,6 +43,36 @@ module BrontoIntegration
       end
     end
 
+    it "adds contact to more than one list" do
+      payload = {
+        member: {
+          email: "spree@wombat.co",
+          list_name: ["spree", "wombat"]
+        }
+      }
+
+      subject = described_class.new config, payload
+
+      VCR.use_cassette "communication/add_multiple_list" do
+        subject.add_to_list
+      end
+    end
+
+    it "removes a contact from multiple lists" do
+      payload = {
+        member: {
+          email: "spree@wombat.co",
+          list_name: ["wombat", "spree"]
+        }
+      }
+
+      subject = described_class.new config, payload
+
+      VCR.use_cassette "communication/remove_from_multiple_list" do
+        subject.remove_from_list
+      end
+    end
+
     it "removes a contact from given list" do
       payload = {
         member: {
