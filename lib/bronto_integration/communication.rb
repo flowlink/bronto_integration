@@ -57,7 +57,7 @@ module BrontoIntegration
       {
         start: Time.new.strftime('%FT%T%:z'),
         messageId: message_id,
-        type: 'transactional',
+        type: email_payload[:type] || 'transactional',
         fromEmail: email_payload[:from] || config[:bronto_from_email],
         fromName: email_payload[:from_name] || config[:bronto_from_name],
         replyEmail: email_payload[:from] || config[:bronto_from_email],
