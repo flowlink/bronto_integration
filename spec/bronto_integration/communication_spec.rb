@@ -24,7 +24,7 @@ module BrontoIntegration
       subject = described_class.new config, payload
 
       VCR.use_cassette "communication/send_email" do
-        subject.trigger_transactional_email
+        subject.trigger_delivery
       end
     end
 

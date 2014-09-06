@@ -39,7 +39,7 @@ module BrontoIntegration
       lists.map { |l| bronto_client.remove_from_list l[:name], member_payload[:email] }
     end
 
-    def trigger_transactional_email
+    def trigger_delivery
       bronto_client.add_deliveries build
     end
 
@@ -57,7 +57,7 @@ module BrontoIntegration
       {
         start: Time.new.strftime('%FT%T%:z'),
         messageId: message_id,
-        type: email_payload[:type] || 'transactional',
+        type: email_payload[:delivery_type] || 'transactional',
         fromEmail: email_payload[:from] || config[:bronto_from_email],
         fromName: email_payload[:from_name] || config[:bronto_from_name],
         replyEmail: email_payload[:from] || config[:bronto_from_email],
@@ -65,7 +65,7 @@ module BrontoIntegration
           { id: contact_id, type: 'contact' }
         ],
         fields: variables_payload.map do |key, value|
-          { name: key.to_s, type: 'html', content: value.to_s }
+          { name: key.to_s, type: email_payload[:message_type] || 'html', content: value.to_s }
         end
       }
     end
